@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+   :root {
+    font-size: 100%;
+    font-size: 16px;
+    line-height: 1.5;
+    --primary-blue: #233975;
+  }
+
+  body{
+    padding: 0;
+    margin: 0;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    background: lightblue;
+  }
+
+  h1{
+    font-size: 2.25rem;
+    font-weight: 700;
+  }
+
+  h2{
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  a{
+    text-decoration: none;
+    color: var(--primary-blue);
+  }
+
+  a:hover
+  {
+    text-decoration: underline;
+  }
+
+  .small{
+    font-size: 80%;
+    text-align: center;
+  }
+
+  .screen{
+    display: flex;
+    flex-direction: column;
+  }
+
+  .left{
+    height: 200px;
+    background: linear-gradient(rgba(0,0,0,0),rgba(0,0,0,0.5)), url('https://wallpapercrafter.com/desktop1/507193-geometry-poly-vector-dots-abstract-digital-art.jpg');
+    background-size: cover;
+  }
+
+  .left .copy{
+    color: white;
+    text-align: center;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  .centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+  .centered img {
+    width: 150px;
+    border-radius: 50%;
+  }
+
+  .right .copy{
+    color: black;
+    text-align: center;
+  }
+
+  .right .copy p{
+    margin: 1.5em 0;
+    font-size: 0.875rem;
+    justify-items: center;
+  }
+
+  .right form{
+    width: 328px;
+  }
+
+  .container {  
+    padding: 50px;  
+    background-color: lightblue;  
+  }  
+
+  div {  
+    padding: 10px 0;  
+  }  
+
+  label{
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .input-container.password{
+    position: relative;
+  }
+
+  .input-container.password i {
+    position: absolute;
+    top: 42px;
+    right: 16px;
+  }
+
+  input[type=text], input[type=password], textarea {  
+    width: 90%;  
+    padding: 15px;  
+    margin: 5px 0 22px 0;  
+    display: inline-block;  
+    border: none;  
+    background: #f1f1f1;  
+  }  
+
+  form {
+    border-radius: 10px;
+    position: relative;
+  }
+
+  .signupbtn
+  {
+    display: block;
+    width: 100%;
+    background: var(--primary-blue);
+    color: white;
+    font-weight: 700;
+    border: none;
+    padding: 1rem;
+    border-radius: px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .signupbtn:hover{
+    background: #2c4893;
+    cursor: pointer;
+  }
+
+  .left, .right{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .error {
+    color: red;
+    font-size: 0.75rem;
+  }
+</style>
+</head>
+<body>
+<?php
+// Initialize variables to store error messages
+$fullnameErr = $subscriptionErr = $genderErr = $phoneErr = $emailErr = $passwordErr = "";
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Check if the Full name field is empty
+    if (empty($_POST["fullname"])) {
+        $fullnameErr = "Full name is required";
+    }
+
+    // Check if the Subscription Plan is selected
+    if ($_POST["subscription"] == "Select") {
+        $subscriptionErr = "Please select a subscription plan";
+    }
+
+    // Check if the Gender field is empty
+    if (empty($_POST["gender"])) {
+        $genderErr = "Gender is required";
+    }
+
+    // Check if the Phone number is 10 digits
+    $phone_number = $_POST["phone"];
+    if (!preg_match("/^\d{10}$/", $phone_number)) {
+        $phoneErr = "Please enter a valid 10-digit phone number";
+    }
+
+    // Check if the Email is valid using regex
+    $email = $_POST["email"];
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $emailErr = "Please enter a valid email address";
+    }
+
+    // Check if Password and Re-type Password match
+    if ($_POST["psw"] !== $_POST["psw-repeat"]) {
+        $passwordErr = "Passwords do not match";
+    }
+
+    // If there are no errors, you can proceed with further processing
+    if (empty($fullnameErr) && empty($subscriptionErr) && empty($genderErr) && empty($phoneErr) && empty($emailErr) && empty($passwordErr)) {
+        // Process the form data, e.g., store it in a database
+        // You can redirect to a success page or do other actions here
+        // Replace this with your actual processing code
+        echo "Form submitted successfully!";
+    }
+}
+?>
+
+<div class="right">
+    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+        <label><b>Full name</b></label>
+        <input type="text" name="fullname" placeholder="Full name" required>
+        <span class="error"><?php echo $fullnameErr; ?></span>
+
+        <label><b>Subscription Plan</b></label>
+        <select name="subscription" required>
+            <option value="Select">Select</option>
+            <option value="1 Month">1 Month</option>
+            <option value="3 Months">3 Months</option>
+            <option value="6 Months">6 Months</option>
+            <option value="1 Year">1 Year</option>
+        </select>
+        <span class="error"><?php echo $subscriptionErr; ?></span>
+
+        <label><b>Gender</b></label>
+        <input type="radio" value="Male" name="gender" checked> Male
+        <input type="radio" value="Female" name="gender"> Female
+        <input type="radio" value="Other" name="gender"> Other
+        <span class="error"><?php echo $genderErr; ?></span>
+
+        <label><b>Phone:</b></label>
+        <input type="text" name="phone" placeholder="Phone number (10 digits)" required>
+        <span class="error"><?php echo $phoneErr; ?></span>
+
+        <label><b>Email</b></label>
+        <input type="text" name="email" placeholder="Enter Email" required>
+        <span class="error"><?php echo $emailErr; ?></span>
+
+        <label><b>Password</b></label>
+        <input type="password" name="psw" placeholder="Enter Password" required>
+
+        <label><b>Re-type Password</b></label>
+        <input type="password" name="psw-repeat" placeholder="Re-type Password" required>
+        <span class="error"><?php echo $passwordErr; ?></span>
+
+        <br>
+        <p>Already have an account? <a href="login.html">Click here to Log-In</a></p>
+
+        <button class="signupbtn" type="submit">Sign Up</button>
+    </form>
+</div>
+</body>
+</html>
